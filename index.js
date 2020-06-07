@@ -6,7 +6,7 @@ const doc = new GoogleSpreadsheet('1KbBHMAnh72Nam5I0V54vC3RqmYnJU3DytSW_v20akO8'
 require('dotenv').config();
 
 // open up port and listen
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 // app.listen(3000, () => console.log('listening at 3000'));
 app.listen(port, () => console.log(`Starting server at ${port}`));
 app.use(express.static('public'));
@@ -24,7 +24,7 @@ async function accessSpreadsheet () {
   // authorize access to sheets
   // const creds = require('./client_secret.json');
   // await doc.useServiceAccountAuth(creds);
-  await doc.useServiceAccountAuth(JSON.parse(process.env.API_KEY));
+  await doc.useServiceAccountAuth(JSON.parse(process.env.CLIENT_SECRET));
 
   // loads document properties and worksheets
   await doc.loadInfo();
