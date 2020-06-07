@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Index</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      canvas {
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Add a New Vocabulary Word</h3>
+    <label>German Word:</label><br />
+    <input type="text" value="" name="german" id="germanWord" /><br />
+    <label>English Word:</label><br />
+    <input type="text" value="" name="english" id="englishWord" /><br />
+    <label>Word Type:</label><br />
+    <select name="wordType" id="wordType">
+      <option value="noun">Noun</option>
+      <option value="verb">Verb</option>
+      <option value="adjective">Adjective</option>
+      <option value="adverb">Adverb</option> </select
+    ><br />
+    <br />
+    <input type="submit" value="Submit" name="" id="submitButton" />
+  </body>
+  <script>
+    const button = document.getElementById("submitButton");
+    button.addEventListener("click", function(e) {
+      console.log("button was clicked");
+      const germanInput = document.getElementById("germanWord").value;
+      const englishInput = document.getElementById("englishWord").value;
+      const typeInput = document.getElementById("wordType").value;
+      console.log("values: " + germanInput + " " + englishInput);
+
+      document.getElementById("germanWord").value = "";
+      document.getElementById("englishWord").value = "";
+
+      // initialize data object.
+      const data = {};
+
+      // get the value of the user inputs.
+      data.german = germanInput;
+      data.english = englishInput;
+      data.type = typeInput;
+
+      // POST method request to add vocab to database.
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      };
+
+      // Fetch to get the current database.
+      fetch("/api", options)
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch(err => console.log(err));
+    });
+  </script>
+</html>
