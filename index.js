@@ -4,7 +4,6 @@ const Datastore = require('nedb');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const doc = new GoogleSpreadsheet('1KbBHMAnh72Nam5I0V54vC3RqmYnJU3DytSW_v20akO8');
 
-
 // open up port and listen
 app.listen(3000, () => console.log('listening at 3000'));
 app.use(express.static('public'));
