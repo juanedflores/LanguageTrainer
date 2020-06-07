@@ -3,9 +3,12 @@ const app = express();
 const Datastore = require('nedb');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const doc = new GoogleSpreadsheet('1KbBHMAnh72Nam5I0V54vC3RqmYnJU3DytSW_v20akO8');
+require('dotenv').config();
 
 // open up port and listen
-app.listen(3000, () => console.log('listening at 3000'));
+const port = process.env.PORT;
+// app.listen(3000, () => console.log('listening at 3000'));
+app.listen(port, () => console.log(`Starting server at ${port}`));
 app.use(express.static('public'));
 // use json
 app.use(express.json({ limit: '1mb' }));
@@ -19,8 +22,10 @@ database.loadDatabase();
  */
 async function accessSpreadsheet () {
   // authorize access to sheets
-  const creds = require('./client_secret.json');
-  await doc.useServiceAccountAuth(creds);
+  // const creds = require('./client_secret.json');
+  // await doc.useServiceAccountAuth(creds);
+  await doc.useServiceAccountAuth(JSON.parse(process.env.API_KEY));
+
   // loads document properties and worksheets
   await doc.loadInfo();
   console.log(doc.title);
