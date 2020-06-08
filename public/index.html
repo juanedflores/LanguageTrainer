@@ -22,6 +22,8 @@
     <h3>Add a New Vocabulary Word</h3>
     <label>German Word:</label><br />
     <input type="text" value="" name="german" id="germanWord" /><br />
+    <label>Spanish Word:</label><br />
+    <input type="text" value="" name="english" id="spanishWord" /><br />
     <label>English Word:</label><br />
     <input type="text" value="" name="english" id="englishWord" /><br />
     <label>Word Type:</label><br />
@@ -32,18 +34,24 @@
       <option value="adverb">Adverb</option> </select
     ><br />
     <br />
-    <input type="submit" value="Submit" name="" id="submitButton" />
+    <input type="submit" value="Submit" name="" id="submitButton" /><br /><br />
+    <input
+      type="button"
+      onclick="location.href='/practice.html';"
+      value="Practice!"
+    />
   </body>
   <script>
-    const button = document.getElementById("submitButton");
-    button.addEventListener("click", function(e) {
-      console.log("button was clicked");
+    const sb = document.getElementById("submitButton");
+    sb.addEventListener("click", function() {
       const germanInput = document.getElementById("germanWord").value;
+      const spanishInput = document.getElementById("spanishWord").value;
       const englishInput = document.getElementById("englishWord").value;
       const typeInput = document.getElementById("wordType").value;
       console.log("values: " + germanInput + " " + englishInput);
 
       document.getElementById("germanWord").value = "";
+      document.getElementById("spanishWord").value = "";
       document.getElementById("englishWord").value = "";
 
       // initialize data object.
@@ -51,6 +59,7 @@
 
       // get the value of the user inputs.
       data.german = germanInput;
+      data.spanish = spanishInput;
       data.english = englishInput;
       data.type = typeInput;
 

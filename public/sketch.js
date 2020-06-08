@@ -1,16 +1,23 @@
 let germanWord = "";
+let spanishWord = "";
 let englishWord = "";
 let language = 0;
+let germanGender = "000000";
+const spanishGender = 0;
 
 /*
  * P5js setup function
  */
 function setup () {
   createCanvas(windowWidth, windowHeight);
- 
-  button = createButton('click me');
-  button.position(20, 20);
-  button.mousePressed(getWord);
+
+  wordText = createDiv('Hello');
+  wordText.style('color', '#ffffff');
+  wordText.style('font-size', '20vw');
+  wordText.center();
+
+  gender = color(255);
+  germanGender = color(255);
 
   // set options to prevent default behaviors for swipe, pinch, etc.
   const options = {
@@ -21,6 +28,7 @@ function setup () {
     direction: Hammer.DIRECTION_ALL
   });
   hammer.on("swipe", swiped);
+  hammer.on("tap", getWord);
 }
 
 function swiped (event) {
@@ -36,11 +44,15 @@ function swiped (event) {
     language = language - 1;
   }
   // wrap language back around
-  if (language > 1) {
+  if (language > 2) {
     language = 0;
   } else if (language < 0) {
-    language = 1;
+    language = 2;
   }
+}
+
+function tapped (event) {
+  console.log(event);
 }
 
 async function getWord () {
@@ -54,9 +66,37 @@ async function getWord () {
     })
     .then(data => {
       console.log(data.german);
-      germanWord = data.german;
-      englishWord = data.english;
-    });
+      console.log(data.spanish);
+      console.log(data.english);
+
+      if (data.german != null) {
+        germanWord = data.german;
+        // determine german gender
+        const article = split(data.german, ' ')[0];
+        if (article.toLowerCase() == "der") {
+          germanGender = color(0, 0, 255);
+        } else if (article.toLowerCase() == "die") {
+          germanGender = color(255, 0, 0);
+        } else if (article.toLowerCase() == "das") {
+          germanGender = color(0, 255, 0);
+        } else {
+          germanGender = color(255);
+        }
+      } else {
+        germanWord = "null";
+      }
+      if (data.spanish != null) {
+        spanishWord = data.spanish;
+      } else {
+        spanishWord = "null";
+      }
+      if (data.english != null) {
+        englishWord = data.english;
+      } else {
+        englishWord = "null";
+      }
+    })
+    .catch(err => console.log(err));
 }
 
 /*
@@ -64,8 +104,18 @@ async function getWord () {
  */
 function draw () {
   background(0);
-  fill(255, 0, 0);
   textSize(100);
   textAlign(CENTER);
-  text(germanWord, width / 2, height / 2);
+  fill(255);
+  if (language == 0) {
+    background(germanGender);
+    wordText.html(germanWord);
+  } else if (language == 1) {
+    background(0);
+    wordText.html(englishWord);
+  } else if (language == 2) {
+    background(0);
+    wordText.html(spanishWord);
+  }
+  wordText.center();
 }

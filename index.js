@@ -7,28 +7,34 @@ require('dotenv').config();
 
 // open up port and listen
 const port = process.env.PORT || 3000;
-// app.listen(3000, () => console.log('listening at 3000'));
 app.listen(port, () => console.log(`Starting server at ${port}`));
 app.use(express.static('public'));
 // use json
 app.use(express.json({ limit: '1mb' }));
-
 // load database
 const database = new Datastore('vocab.db');
-database.loadDatabase();
+database.loadDatabase(function (err) {
+  database.find({}, function (err, docs) {
+    // console.log(err || docs);
+  });
+});
 
 /*
  * Asynchronous function to access spreadsheets.
  */
 async function accessSpreadsheet () {
-  // authorize access to sheets
-  // const creds = require('./client_secret.json');
-  // await doc.useServiceAccountAuth(creds);
-  await doc.useServiceAccountAuth(JSON.parse(process.env.CLIENT_SECRET));
-
-  // loads document properties and worksheets
-  await doc.loadInfo();
-  console.log(doc.title);
+  try {
+    await doc.useServiceAccountAuth({
+      client_email: process.env.CLIENT_EMAIL,
+      private_key: process.env.PRIVATE_KEY
+    });
+    /// / loads document properties and worksheets
+    await doc.loadInfo();
+    // use API
+    await console.log(doc.title);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /*
@@ -43,7 +49,10 @@ app.post('/api', (request, response) => {
   const timestamp = Date.now();
   data.timestamp = timestamp;
   // insert the data to database
-  database.insert(data);
+  database.insert(data, function (err, wordAdded) {
+    if (err) console.log("There's a problem with the database: ", err);
+    else if (wordAdded) console.log("New word inserted in the database");
+  });
   // send back to client
   response.json(data);
   accessSpreadsheet();

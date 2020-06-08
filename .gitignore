@@ -1,4 +1,6 @@
 # Untrack folders
 node_modules/
 .env
+.DS_Store
 client_secret.json
+
