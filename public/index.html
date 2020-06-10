@@ -21,11 +21,13 @@
   <body>
     <h3>Add a New Vocabulary Word</h3>
     <label>German Word:</label><br />
-    <input type="text" value="" name="german" id="germanWord" /><br />
+    <input type="text" value="" name="german" id="germanWord"/><br />
     <label>Spanish Word:</label><br />
     <input type="text" value="" name="english" id="spanishWord" /><br />
     <label>English Word:</label><br />
     <input type="text" value="" name="english" id="englishWord" /><br />
+    <label>German Definition:</label><br />
+    <input type="text" value="" name="germanDef" id="germanDefinition" /><br />
     <label>Word Type:</label><br />
     <select name="wordType" id="wordType">
       <option value="noun">Noun</option>
@@ -34,11 +36,28 @@
       <option value="adverb">Adverb</option> </select
     ><br />
     <br />
-    <input type="submit" value="Submit" name="" id="submitButton" /><br /><br />
+    <input type="submit" value="Submit" name="" id="submitButton" style="background-color:#8ab1d8;color:white"/><br /><br />
     <input
       type="button"
       onclick="location.href='/practice.html';"
-      value="Practice!"
+      value="Practice Words From Database!"
+      style="background-color:#e5d1b7;color:black"
+    /><br /><br />
+    <input
+      type="button"
+      onclick="location.href='./grammar/index.html';"
+      value="Get Random Grammar Lesson!"
+    /><br /><br />
+    <input
+      type="button"
+      onclick="location.href='./spreadsheet/index.html';"
+      value="Get Random Saved Entry From Google Translate!"
+      style="background-color:#e5d1b7;color:black"
+    /><br /><br />
+    <input
+      type="button"
+      onclick="location.href='./grammar/index.html';"
+      value="German Word Cloud"
     />
   </body>
   <script>
@@ -47,12 +66,14 @@
       const germanInput = document.getElementById("germanWord").value;
       const spanishInput = document.getElementById("spanishWord").value;
       const englishInput = document.getElementById("englishWord").value;
+      const germanDefInput = document.getElementById("germanDefinition").value;
       const typeInput = document.getElementById("wordType").value;
       console.log("values: " + germanInput + " " + englishInput);
 
       document.getElementById("germanWord").value = "";
       document.getElementById("spanishWord").value = "";
       document.getElementById("englishWord").value = "";
+      document.getElementById("germanDefinition").value = "";
 
       // initialize data object.
       const data = {};
@@ -61,6 +82,7 @@
       data.german = germanInput;
       data.spanish = spanishInput;
       data.english = englishInput;
+      data.germanDefinition = germanDefInput
       data.type = typeInput;
 
       // POST method request to add vocab to database.
