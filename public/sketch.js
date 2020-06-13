@@ -99,41 +99,54 @@ async function getWord() {
     })
     .then(data => {
       wordType = data.type;
-      if (data.german != null && data.german != germanWord) {
-        germanWord = data.german;
-        // determine german gender
-        const germanArticle = split(data.german, " ")[0];
-        if (germanArticle.toLowerCase() == "der") {
-          germanGender = color(0, 0, 255);
-        } else if (germanArticle.toLowerCase() == "die") {
-          germanGender = color(255, 0, 0);
-        } else if (germanArticle.toLowerCase() == "das") {
-          germanGender = color(30, 130, 0);
+      germanWord = data.german;
+      spanishWord = data.spanish;
+      englishWord = data.english;
+    
+      if (data.type == "noun") {
+        if (data.german != null) {
+          //germanWord = data.german;
+          // determine german gender
+          const germanArticle = split(data.german, " ")[0];
+          if (germanArticle.toLowerCase() == "der") {
+            germanGender = color(0, 0, 255);
+          } else if (germanArticle.toLowerCase() == "die") {
+            germanGender = color(255, 0, 0);
+          } else if (germanArticle.toLowerCase() == "das") {
+            germanGender = color(30, 130, 0);
+          } else {
+            germanGender = color(0);
+          }
         } else {
-          germanGender = color(0);
+          //germanWord = "null";
+          //getWord()
         }
-      } else {
-        //germanWord = "null";
-        //getWord()
-      }
-      if (data.spanish != null && data.spanish != spanishWord) {
-        spanishWord = data.spanish;
-        const spanishArticle = split(data.spanish, " ")[0];
-        if (spanishArticle.toLowerCase() == "el") {
-          spanishGender = color(93, 144, 173);
-        } else if (spanishArticle.toLowerCase() == "la") {
-          spanishGender = color(179, 124, 89);
+        if (data.spanish != null) {
+          const spanishArticle = split(data.spanish, " ")[0];
+          if (spanishArticle.toLowerCase() == "el") {
+            spanishGender = color(93, 144, 173);
+          } else if (spanishArticle.toLowerCase() == "la") {
+            spanishGender = color(179, 124, 89);
+          }
+        } else {
+          //spanishWord = "null";
+          //getWord()
         }
-      } else {
-        //spanishWord = "null";
-        //getWord()
+        if (data.english != null) {
+        } else {
+          //englishWord = "null";
+          //getWord()
+        }
       }
-      if (data.english != null && data.english != englishWord) {
-        englishWord = data.english;
-      } else {
-        //englishWord = "null";
-        //getWord()
-      }
+    
+    if (data.type == "verb") {
+      germanGender = color(160, 123, 224);
+      spanishGender = color(0);
+      console.log("it entered");
+    }
+    console.log(data.type);
+
+      // Word Definition
       if (
         data.germanDefinition != null &&
         data.germanDefinition != definitionWord
