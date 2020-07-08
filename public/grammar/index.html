@@ -3,12 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- <meta name="viewport" content="width=device-width" /> -->
+    <meta name="viewport" content="width=device-width" />
     <meta
       name="viewport"
       content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"
     />
     <title>Grammar Lessons</title>
+
+    <link rel="stylesheet" href="./wiki.css" />
 
     <style>
       body {
@@ -20,14 +22,38 @@
     <script src="inline.js"></script>
   </head>
   <body onload="loadExternalHTMLPage()">
-    <input
-      type="button"
-      onclick="loadExternalHTMLPage()"
-      value="Get a German Grammar Lesson"
-      style="background-color:#8dc4a3;color:black"
-    /><br /><br />
-    <div id="main">
-      <div id="contentArea"></div>
+    <div class="container" style="height: 100%; margin: auto; width: 960px;">
+      <input
+        type="button"
+        onclick="loadExternalHTMLPage()"
+        value="Get a German Grammar Lesson"
+        style="background-color:#8dc4a3;color:black; align: center;"
+      /><br /><br />
+      <input
+        type="button"
+        onclick="toggleForm()"
+        value="Write a Grammar Lesson"
+        style="background-color:#8dc4a3;color:black"
+      /><br /><br />
+      <div id="grammarEdit" name="grammarEdit" style="display: none">
+        <textarea
+          id="grammarArea"
+          name="grammarArea"
+          rows="25"
+          cols="50"
+          style="height: 100%; margin: auto; width: 960px;"
+        ></textarea>
+        <input
+          id="submitButton"
+          type="button"
+          onclick="submitForm()"
+          value="Submit Form"
+          style="background-color:#8dc4a3;color:black"
+        /><br /><br />
+      </div>
+    </div>
+    <div id="main" style="height: 100%; margin: auto; width: 960px;">
+      <div id="contentArea" style="margin: auto;"></div>
     </div>
   </body>
 </html>

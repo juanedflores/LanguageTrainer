@@ -1,15 +1,23 @@
+// DOM element.
+let div;
+
+// To hold the received translations, definition, and grammatic word type.
 let germanWord =
   "Tap for new word\nSwipe left/right to change language\nSwipe up/down to toggle definition";
 let spanishWord = "";
 let englishWord = "";
 let definitionWord = "";
 let wordType = "";
-let wordText;
+
+// For keeping track of what language currently on, or if viewing definition.
 let language = 0;
 let definition = 0;
-let germanGender = "000000";
+
+// For background color.
+let germanGender = 0;
 let spanishGender = 0;
 
+// Text to speech.
 let msg = new SpeechSynthesisUtterance();
 
 /*
@@ -18,26 +26,13 @@ let msg = new SpeechSynthesisUtterance();
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  wordText = createDiv("Hello");
-  wordText.attribute("lang", "de");
-  wordText.style("color", "#ffffff");
-  wordText.style("font-size", "4vw");
-  wordText.style("padding", "8vw");
-  wordText.center();
+  div = createDiv();
+  div.attribute("lang", "de");
+  div.style("color", "#ffffff");
+  div.style("font-size", "5vw");
+  div.style("padding", "8vw");
+  div.center();
 
-  ////let msg = new SpeechSynthesisUtterance();
-  let voices = window.speechSynthesis.getVoices();
-  let index = 0;
-  window.speechSynthesis.getVoices().some(function(voice) {
-    if (voice.name == "Anna") {
-      return index;
-    }
-    index += 1;
-    //console.log(voice.name, voice.default ? voice.default :'');
-  });
-  msg.voice = voices[index];
-
-  gender = color(255);
   germanGender = color(0);
 
   // set options to prevent default behaviors for swipe, pinch, etc.
@@ -50,31 +45,57 @@ function setup() {
   });
   hammer.on("swipe", swiped);
   hammer.on("tap", getWord);
+
+  getSpeech();
 }
 
+/*
+ * Set up text to speech.
+ */
+function getSpeech() {
+  let voices = window.speechSynthesis.getVoices();
+  let index = 0;
+  window.speechSynthesis.getVoices().some(function(voice) {
+    if (voice.name == "Anna") {
+      return index;
+    }
+    index += 1;
+  });
+  msg.voice = voices[index];
+}
+
+/*
+ * Handle Swipe Events.
+ */
 function swiped(event) {
   if (event.direction == 4) {
+    // Right swipe.
     if (definition == 0) {
       language = language + 1;
     }
   } else if (event.direction == 8) {
+    // Top swipe.
     definition = definition + 1;
     language = 0;
   } else if (event.direction == 16) {
+    // Down swipe.
     definition = definition - 1;
     language = 0;
   } else if (event.direction == 2) {
+    // Left swipe.
     if (definition == 0) {
       language = language - 1;
     }
   }
-  // wrap language back around
+
+  // Wrap language back around.
   if (language > 2) {
     language = 0;
   } else if (language < 0) {
     language = 2;
   }
 
+  // Wrap up/down modes around.
   if (definition > 1) {
     definition = 0;
   } else if (definition < 0) {
@@ -88,8 +109,10 @@ function swiped(event) {
   }
 }
 
+/*
+ * Retrieve and handle a new word from database.
+ */
 async function getWord() {
-  // Fetch to get the current database.
   await fetch("/words", {
     method: "GET",
     headers: { "Content-Type": "application/json" }
@@ -98,15 +121,16 @@ async function getWord() {
       return response.json();
     })
     .then(data => {
-      wordType = data.type;
       germanWord = data.german;
       spanishWord = data.spanish;
       englishWord = data.english;
-    
+      wordType = data.type;
+      definitionWord = data.germanDefinition;
+
+      // [NOUNS]
+      // Determine the genders of words for german and spanish.
       if (data.type == "noun") {
         if (data.german != null) {
-          //germanWord = data.german;
-          // determine german gender
           const germanArticle = split(data.german, " ")[0];
           if (germanArticle.toLowerCase() == "der") {
             germanGender = color(0, 0, 255);
@@ -114,12 +138,7 @@ async function getWord() {
             germanGender = color(255, 0, 0);
           } else if (germanArticle.toLowerCase() == "das") {
             germanGender = color(30, 130, 0);
-          } else {
-            germanGender = color(0);
           }
-        } else {
-          //germanWord = "null";
-          //getWord()
         }
         if (data.spanish != null) {
           const spanishArticle = split(data.spanish, " ")[0];
@@ -128,40 +147,28 @@ async function getWord() {
           } else if (spanishArticle.toLowerCase() == "la") {
             spanishGender = color(179, 124, 89);
           }
-        } else {
-          //spanishWord = "null";
-          //getWord()
-        }
-        if (data.english != null) {
-        } else {
-          //englishWord = "null";
-          //getWord()
         }
       }
-    
-    if (data.type == "verb") {
-      germanGender = color(160, 123, 224);
-      spanishGender = color(0);
-      console.log("it entered");
-    }
-    console.log(data.type);
 
-      // Word Definition
-      if (
-        data.germanDefinition != null &&
-        data.germanDefinition != definitionWord
-      ) {
-        definitionWord = data.germanDefinition;
-      } else {
-        //definitionWord = "null";
-        //getWord()
+      // [VERBS]
+      else if (data.type == "verb") {
+        germanGender = color(160, 123, 224);
+        spanishGender = color(0);
+      } else if (data.type == "adjective") {
+        germanGender = color(191, 151, 72);
+        spanishGender = color(0);
+      } else if (data.type == "adverb") {
+        germanGender = color(115, 88, 145);
+        spanishGender = color(0);
       }
     })
     .catch(err => console.log(err));
 
+  // Speak the new word.
   msg.text = germanWord;
   speechSynthesis.speak(msg);
 
+  // Always start with german word when tap screen.
   language = 0;
   definition = 0;
 }
@@ -170,26 +177,29 @@ async function getWord() {
  * P5js draw function.
  */
 function draw() {
-  background(0);
   if (definition == 0) {
+    // Viewing a word.
     if (language == 0) {
       background(germanGender);
-      wordText.html(germanWord);
+      div.html(germanWord);
     } else if (language == 1) {
       background(0);
-      wordText.html(englishWord);
+      div.html(englishWord);
     } else if (language == 2) {
       background(spanishGender);
-      wordText.html(spanishWord);
+      div.html(spanishWord);
     }
   } else {
+    // Viewing a word definition.
     background(0);
-    wordText.html(definitionWord);
+    div.html(definitionWord);
   }
-  wordText.center();
+  div.center();
 }
 
+/*
+ * Handle window resizing.
+ */
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  redraw();
 }
