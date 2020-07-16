@@ -107,6 +107,7 @@ function swiped(event) {
     msg.text = definitionWord;
     speechSynthesis.speak(msg);
   }
+  loop();
 }
 
 /*
@@ -171,6 +172,7 @@ async function getWord() {
   // Always start with german word when tap screen.
   language = 0;
   definition = 0;
+  loop();
 }
 
 /*
@@ -195,6 +197,7 @@ function draw() {
     div.html(definitionWord);
   }
   div.center();
+  noLoop();
 }
 
 /*
