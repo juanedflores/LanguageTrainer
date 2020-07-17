@@ -20,11 +20,14 @@ let spanishGender = 0;
 // Text to speech.
 let msg = new SpeechSynthesisUtterance();
 
+let auto;
+let listener;
+
 /*
  * P5js setup function
  */
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  const canvas = createCanvas(windowWidth, windowHeight);
 
   div = createDiv();
   div.attribute("lang", "de");
@@ -64,10 +67,34 @@ function getSpeech() {
   msg.voice = voices[index];
 }
 
+function automate() {
+  speechSynthesis.cancel();
+  if (document.getElementById("auto").textContent == "Stop Auto") {
+    document.getElementById("auto").textContent = "Auto Mode";
+    clearTimeout(auto);
+    return;
+  } else if (document.getElementById("auto").textContent == "Auto Mode") {
+
+    listener = function(e) {
+      speechSynthesis.cancel();
+      clearTimeout(auto);
+      if (document.getElementById("auto").textContent == "Stop Auto") {
+        auto = setTimeout(() => {
+          getWord();
+        }, 2000);
+      }
+    };
+
+    document.getElementById("auto").textContent = "Stop Auto";
+    msg.addEventListener("end", listener, true);
+  }
+}
+
 /*
  * Handle Swipe Events.
  */
 function swiped(event) {
+  speechSynthesis.cancel();
   if (event.direction == 4) {
     // Right swipe.
     if (definition == 0) {
@@ -114,6 +141,7 @@ function swiped(event) {
  * Retrieve and handle a new word from database.
  */
 async function getWord() {
+  speechSynthesis.cancel();
   await fetch("/words", {
     method: "GET",
     headers: { "Content-Type": "application/json" }
