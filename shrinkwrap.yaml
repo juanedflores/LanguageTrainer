@@ -1,5 +1,6 @@
 dependencies:
   dotenv: 8.2.0
+  enable-auto-tts: 0.1.2
   express: 4.17.1
   google-spreadsheet: 3.0.11
   nedb: 1.8.0
@@ -158,6 +159,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
+  /enable-auto-tts/0.1.2:
+    dev: false
+    resolution:
+      integrity: sha512-hNeOU6CrhUR6LHdRSfPdUEhXFVmC7/0A4fLJ4cbXVB9XXBLm6A0g+v2BQWNT4abfJEpG7Hd6xHj4IZMJ5nuGzA==
   /encodeurl/1.0.2:
     dev: false
     engines:
@@ -678,6 +683,7 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   dotenv: ^8.2.0
+  enable-auto-tts: ^0.1.2
   express: ^4.17.1
   google-spreadsheet: ^3.0.11
   nedb: ^1.8.0
