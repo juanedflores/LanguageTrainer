@@ -3,11 +3,12 @@ const app = express();
 const Datastore = require("nedb");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const doc = new GoogleSpreadsheet(
-  "1KbBHMAnh72Nam5I0V54vC3RqmYnJU3DytSW_v20akO8"
+  process.env.SHEETS_ID
 );
 require("dotenv").config();
 const fs = require("fs");
-const dir = "./public/grammar/lessons";
+const germandir = "./public/grammar/germanlessons";
+const spanishdir = "./public/grammar/spanishlessons";
 
 let lastdoc = 0;
 let lastsheet = 0;
@@ -42,9 +43,10 @@ async function accessSpreadsheet() {
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
     const rows = await sheet.getRows();
-    let index = Math.floor(Math.random() * rows.length);
+    console.log(rows.length);
+    let index = Math.floor(Math.random() * rows.length + 1);
     while (index == lastsheet) {
-      index = Math.floor(Math.random() * rows.length);
+      index = Math.floor(Math.random() * rows.length + 1);
     }
     lastsheet = index;
     await sheet.loadCells("C" + index + ":D" + index);
@@ -107,7 +109,7 @@ app.get("/spreads", (request, response) => {
 });
 
 app.get("/lessons", (request, response) => {
-  fs.readdir(dir, (err, files) => {
+  fs.readdir(germandir, (err, files) => {
     let index = 0;
     if (files.length > 1) {
       index = Math.floor(Math.random() * files.length);
@@ -118,10 +120,7 @@ app.get("/lessons", (request, response) => {
     }
     let file = files[index];
 
-    fs.readFile("public/grammar/lessons/" + file, "utf8", function read(
-      err,
-      data
-    ) {
+    fs.readFile("public/grammar/germanlessons/" + file, "utf8", function read(err, data) {
       if (err) {
         throw err;
       }
@@ -135,7 +134,7 @@ app.get("/lessons", (request, response) => {
 app.post("/savelesson", (request, response) => {
   //console.log(request.body.one);
 
-  fs.readdir(dir, (err, files) => {
+  fs.readdir(germandir, "utf8", (err, files) => {
     let total = files.length;
     //console.log(total)
     let text = request.body.one;

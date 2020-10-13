@@ -1,4 +1,4 @@
-async function getLesson() {
+async function getGermanLesson() {
   let content;
   await fetch("/lessons", {
     method: "GET",
@@ -14,10 +14,17 @@ async function getLesson() {
   return content;
 }
 
-function loadExternalHTMLPage() {
-  getLesson().then(
-    cont => (document.getElementById("contentArea").innerHTML = cont)
-  );
+async function loadExternalHTMLPage() {
+  //if (language == "german") {
+    await getGermanLesson().then(
+      cont => (document.getElementById("contentArea").innerHTML = cont)
+    );
+  //} else {
+   // await getSpanishLesson().then(
+    //  cont => (document.getElementById("contentArea").innerHTML = cont)
+    //);
+  //}
+  windowResized();
 }
 
 function toggleForm() {
@@ -34,14 +41,14 @@ function submitForm() {
 
   const data = {};
   data.one = area.value;
-  
+
   // POST method request to add vocab to database.
   const options = {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(data)
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   };
 
   // Fetch to get the current database.
@@ -49,7 +56,7 @@ function submitForm() {
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(err => console.log(err));
-  
+
   // Hide the submit elements.
   //area.style.display = "none";
   area.value = "";

@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta content="text/html" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width" />
     <meta
@@ -13,7 +14,8 @@
     <link rel="stylesheet" href="./wiki.css" />
 
     <style>
-      html, body {
+      html,
+      body {
         margin: 0;
         padding: 0;
       }
@@ -21,8 +23,7 @@
 
     <script src="./libraries/p5.js"></script>
     <script src="inline.js"></script>
-    <script src="whiteboard.js"></script>
-
+    
   </head>
   <body onload="loadExternalHTMLPage()">
     <div class="container" style="height: 100%; margin: auto; width: 960px;">
@@ -31,7 +32,7 @@
         onclick="loadExternalHTMLPage()"
         value="Get a German Grammar Lesson"
         style="background-color:#8dc4a3;color:black; align: center;"
-      /><br /><br />
+      /><br /><br />      
       <input
         type="button"
         onclick="toggleForm()"
@@ -58,5 +59,7 @@
     <div id="main" style="height: 100%; margin: auto; width: 960px;">
       <div id="contentArea" style="margin: auto;"></div>
     </div>
+    <div id="whiteboard"></div>
   </body>
+  <script src="whiteboard.js"></script>
 </html>
