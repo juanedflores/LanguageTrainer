@@ -3,11 +3,12 @@ const app = express();
 const Datastore = require("nedb");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const doc = new GoogleSpreadsheet(
-  "1KbBHMAnh72Nam5I0V54vC3RqmYnJU3DytSW_v20akO8"
+  process.env.SHEETS_ID
 );
 require("dotenv").config();
 const fs = require("fs");
-const dir = "./public/grammar/lessons";
+const germandir = "./public/grammar/germanlessons";
+const spanishdir = "./public/grammar/spanishlessons";
 
 let lastdoc = 0;
 let lastsheet = 0;
@@ -42,9 +43,10 @@ async function accessSpreadsheet() {
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
     const rows = await sheet.getRows();
-    let index = Math.floor(Math.random() * rows.length);
+    console.log(rows.length);
+    let index = Math.floor(Math.random() * rows.length + 1);
     while (index == lastsheet) {
-      index = Math.floor(Math.random() * rows.length);
+      index = Math.floor(Math.random() * rows.length + 1);
     }
     lastsheet = index;
     await sheet.loadCells("C" + index + ":D" + index);
@@ -104,22 +106,21 @@ app.get("/words", (request, response) => {
 
 app.get("/spreads", (request, response) => {
   accessSpreadsheet().then(val => response.send(val));
-  //console.log(values.first + " " + values.second);
-  //response.send(values);
 });
 
 app.get("/lessons", (request, response) => {
-  fs.readdir(dir, (err, files) => {
-    let index = Math.floor(Math.random() * files.length);
-    while (index == lastlesson) {
+  fs.readdir(germandir, (err, files) => {
+    let index = 0;
+    if (files.length > 1) {
       index = Math.floor(Math.random() * files.length);
+      while (index == lastlesson) {
+        index = Math.floor(Math.random() * files.length);
+      }
+      lastlesson = index;
     }
-    lastlesson = index;
-
     let file = files[index];
-    console.log(file);
 
-    fs.readFile("public/grammar/lessons/"+file, "utf8", function read(err, data) {
+    fs.readFile("public/grammar/germanlessons/" + file, "utf8", function read(err, data) {
       if (err) {
         throw err;
       }
@@ -127,5 +128,28 @@ app.get("/lessons", (request, response) => {
       let message = { first: content };
       response.send(message);
     });
+  });
+});
+
+app.post("/savelesson", (request, response) => {
+  //console.log(request.body.one);
+
+  fs.readdir(germandir, "utf8", (err, files) => {
+    let total = files.length;
+    //console.log(total)
+    let text = request.body.one;
+    let s = text.search("<title>");
+    let e = text.search("</title>");
+    if (s > 1) {
+      let title = text.substring(s + 7, s + (e - s));
+      fs.appendFile(
+        "public/grammar/lessons/" + title,
+        request.body.one,
+        function(err) {
+          if (err) throw err;
+          console.log("Saved!");
+        }
+      );
+    }
   });
 });
